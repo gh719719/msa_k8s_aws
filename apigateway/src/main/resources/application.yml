@@ -1,0 +1,51 @@
+# eks 배포 시 apigateway는 eureka server 등록하지 않겠다는 설정
+eureka:
+  client:
+    enabled: false
+    
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - 'http://localhost:3000'
+              - 'http://server.pinksaurus.shop' # 운영 도메인도 추가하는 것이 안전합니다.
+            allowedMethods: '*'
+            allowedHeaders: '*'
+            exposedHeaders: '*'
+            allowCredentials: true
+
+      routes:
+        # 1. User Service
+        - id: user-service
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - StripPrefix=1
+          # lb:// 대신 쿠버네티스 서비스 이름과 포트를 직접 적습니다.
+          uri: http://user-service:80
+
+        # 2. Product Service
+        - id: product-service
+          predicates:
+            - Path=/product-service/**
+          filters:
+            - StripPrefix=1
+          # 아까 product-service의 포트를 80으로 설정하셨으므로 80을 적습니다.
+          uri: http://product-service:80
+
+        # 3. Order Service
+        - id: order-service
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - StripPrefix=1
+          uri: http://order-service:80
+
+jwt:
+  secret: jwt-secret-key-gh719719-1234567890

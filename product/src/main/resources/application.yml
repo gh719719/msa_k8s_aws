@@ -1,0 +1,89 @@
+# # localhost
+# server:
+#   port: 0
+
+# spring:
+  
+#   application:
+#     # 아래 주소까지 들어가는 건 api gateway의 역할
+#     # http://server.xxxx.shop/
+
+#     # url pattern
+#     # http://server.xxxx.shop/user-service
+#     # http://server.xxxx.shop/user-service/users/signIn
+#     name: product-service
+
+#   # mariadb settings
+#   datasource:
+#     driver-class-name:  org.mariadb.jdbc.Driver
+#     url:                jdbc:mariadb://localhost:3306/inspire   # 마지막은 DB 이름
+#     username:           inspire
+#     password:           '$pp020719'
+    
+#   jpa:
+#     hibernate: 
+#       # create, create-drop, update, none
+#       ddl-auto:  create
+#       # 콘솔출력
+#     show-sql: true     
+#     properties:
+#       hibernate:
+#         # h2
+#         # dialect: org.hibernate.dialect.H2Dialect
+#         # mariadb
+#         dialect: org.hibernate.dialect.MariaDBDialect
+#         format_sql: true
+#         # # redis
+#         # 도커, 이미지 생성 # docker run -d --name redis-container -p 6379:6379 redis:7.2
+#         # 도커 접속? # docker exec -it redis-container redis-cli
+#         # docker run -d --name redis-insight -p 8001:8001 redis/redisinsight:latest
+#         # Host: redis 또는 host.docker.internal , port: 6379
+    
+#   # data:
+#   #   redis:
+#   #     host: localhost
+#   #     port: 6379
+#   #     password: 
+#   #     timeout: 6000ms
+#   kafka:
+#     kafka-server: localhost:9092
+#     consumer:
+#       group-id: product-group
+#       auto-offset-reset: earliest
+
+# # eureka client user service -> eureka server
+# eureka:
+#   client:
+#     serviceUrl:
+#       defaultZone: http://localhost:8761/eureka
+
+# msa - k8s - aws version
+# eks 배포 시 apigateway는 eureka server 등록하지 않겠다.
+eureka:
+  client:
+    enabled: false
+    
+spring:  
+  application:
+    name: product-service
+
+  datasource:
+    driver-class-name:  org.mariadb.jdbc.Driver
+    url:                jdbc:mariadb://localhost:3306/inspire   # 마지막은 DB 이름
+    username:           inspire
+    password:           '$pp020719'
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    hibernate: 
+        ddl-auto: create
+    show-sql: true
+
+  kafka:
+    # pod 실행 중인 service 이름으로 변경 (localhost X)
+    kafka-server: kafka-service:9092
+    consumer:
+      group-id: product-group
+      auto-offset-reset: earliest
