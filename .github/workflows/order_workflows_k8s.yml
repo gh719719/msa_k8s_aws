@@ -54,10 +54,10 @@ jobs:
       - name: image build and push docker image to ecr
         env: 
           REGISTRY: 414901227428.dkr.ecr.ap-northeast-2.amazonaws.com
-          REPOSITORY: order-gh719719-backend
+          REPOSITORY: apigateway
           IMAGE_TAG: latest
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./apigateway/Dockerfile .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./apigateway/Dockerfile . ./apigateway
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: eks kubectl apigateway apply
