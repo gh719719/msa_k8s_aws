@@ -40,7 +40,7 @@ jobs:
       - name: create namespace
         run: |
           kubectl create namespace lgcns --dry-run=client -o yaml | kubectl apply -f -
-          
+
       # infra 구축(ingress, kafka, redis, zookepper, rabbitMQ)
       - name: deploy infra
         run: |
@@ -57,7 +57,7 @@ jobs:
           REPOSITORY: order-gh719719-backend
           IMAGE_TAG: latest
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f Dockerfile .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f ./apigateway/Dockerfile .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: eks kubectl apigateway apply
