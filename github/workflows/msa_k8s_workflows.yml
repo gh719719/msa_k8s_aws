@@ -19,13 +19,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: install kubectl
-        users: azure/setup-kubectl@v3
+        uses: azure/setup-kubectl@v3
         with:
           version: "v1.34.1"
 
       # aws 인증
       - name: aws configure
-        users: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
