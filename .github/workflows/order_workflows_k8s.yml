@@ -37,6 +37,10 @@ jobs:
       - name: aws ecr login
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: create namespace
+        run: |
+          kubectl create namespace lgcns --dry-run=client -o yaml | kubectl apply -f -
+          
       # infra 구축(ingress, kafka, redis, zookepper, rabbitMQ)
       - name: deploy infra
         run: |
@@ -44,3 +48,19 @@ jobs:
           kubectl apply -f ./k8s/msa-zookeeper.yml
           kubectl apply -f ./k8s/msa-kafka.yml
           kubectl apply -f ./k8s/msa-redis.yml
+
+      # image 생성하고 ecr push까지 자동화
+      # apigateway, user, product, order
+      - name: image build and push docker image to ecr
+        env: 
+          REGISTRY: 414901227428.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: order-gh719719-backend
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f Dockerfile .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apigateway apply
+        run: |
+          kubectl apply -f ./apigateway/k8s/apigateway-depl.yml
+          kubectl rollout restart deployment apigateway-deployment -n lgcns
